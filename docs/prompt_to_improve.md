@@ -50,3 +50,7 @@ you have done an absolutely awesome job so far! now please use the same rigorous
 
 ---
 awesome job with the comprehensive execution plan for codebase completion by AI coding agents working in parallel. Please carefully and meticulously review your completed coding execution plan and identify any gaps or improvements needed. thank you very much!
+
+---
+awesome job! but you only created an improved solution blueprint. you did not create a complete validated and fully working actionable PRD! please think deeper and think harder to explore how you can create a complete working PRD with your improvements incorporated. make sure you carefully and meticulously plan how to create one before proceeding to create one. after generation, please carefully review the improved PRD to double-check and validate for correctness and accuracy one more time. thank you my most trusted AI assistant and helper!
+
