@@ -43,3 +43,15 @@ Please acknowledge that you are ready to operate at this elevated standard.
 You will take the above as your meta-instruction going forward. You will apply this framework to all future requests.
 
 Now think deeper and think harder and explore thoroughly and carefully on how to design an AI agent that can handle a typical customer service request / ticket submitted through an easy to use and intuitive web based customer service chatbot. You have to use long chain of thought to thoroughly and deeply think, explore how your AI-driven customer service agent can work for a company like Salesforce. Plan then create a comprehensive solution proposal and blueprint that can correctly be translated into actual software implementation for the customer service agent. Make sure your customer service agent can handle most of the typical customer service tickets as possible, if not all tickets. Give me your comprehensive solution proposal/blueprint in markdown document within ```markdown tags.
+
+You are to design a comprehensive AI-driven customer service agent for Salesforce. You need to include the following considerations in your extensive exploration of this request:
+1. Salesforce's complex ecosystem and typical customer service needs
+2. Enterprise-grade architecture requirements
+3. Advanced AI/ML capabilities for natural language understanding
+4. Integration points with existing Salesforce products
+5. Scalability for millions of interactions
+6. Security and compliance (SOC2, GDPR, etc.)
+7. Edge cases and failure scenarios
+8. Measurable business outcomes
+
+You need to create a blueprint that goes beyond basic chatbot functionality to deliver a truly intelligent, self-improving system that can handle the complexity of Salesforce's diverse customer base.
