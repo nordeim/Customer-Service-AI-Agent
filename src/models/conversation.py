@@ -48,4 +48,4 @@ class Conversation(CoreSchemaBase, UUIDPkMixin, TimestampMixin):
 
     context: Mapped[dict] = mapped_column(JSON, default=dict)
     context_switches: Mapped[list] = mapped_column(JSON, default=list)
-    metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    conversation_data: Mapped[dict] = mapped_column(JSON, default=dict)

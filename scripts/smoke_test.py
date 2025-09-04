@@ -3,14 +3,13 @@ from __future__ import annotations
 import asyncio
 import json
 
-import httpx
+from httpx import AsyncClient, ASGITransport
 
-# from src.api.main import app
-from api.main import app
-
+from src.api.main import app
 
 async def main() -> None:
-    async with httpx.AsyncClient(app=app, base_url="http://test") as client:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         r1 = await client.get("/api/health")
         r2 = await client.get("/api/ready")
         print("/api/health:", r1.status_code, r1.json())

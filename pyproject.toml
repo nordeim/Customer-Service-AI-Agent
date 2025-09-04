@@ -35,11 +35,7 @@ dev = [
 
 [tool.poetry]
 packages = [
-    { include = "api", from = "src" },
-    { include = "core", from = "src" },
-    { include = "database", from = "src" },
-    { include = "models", from = "src" },
-    { include = "repositories", from = "src" },
+    { include = "src" },
 ]
 
 [tool.black]

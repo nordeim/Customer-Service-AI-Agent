@@ -42,4 +42,4 @@ class Message(CoreSchemaBase, UUIDPkMixin, TimestampMixin):
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
     attachments: Mapped[list] = mapped_column(JSON, default=list)
-    metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    message_data: Mapped[dict] = mapped_column(JSON, default=dict)

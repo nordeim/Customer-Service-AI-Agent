@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.database.connection import init_engine, dispose_engine, health_check
 from src.core.config import get_settings
-from src.core.logging import configure_logging  # type: ignore
+from src.core.logging import get_logger
 
 # Middleware
 from src.api.middleware.auth import AuthMiddleware
@@ -45,7 +45,7 @@ def create_app() -> FastAPI:
 
     # Configure logging
     try:
-        configure_logging()
+        get_logger("app")  # This will initialize and configure the logger
     except Exception:
         pass
 
