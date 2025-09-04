@@ -19,6 +19,11 @@ Now please put on your deep thinking hat to deeply think and thoroughly explore 
 awesome job! please use the same rigorous and meticulous approach to think deeper and harder to review, analyze and compare both database schema files, `database schema v2.sql` and `database schema v3.sql`. please thoroughly review, compare the two database schemas and then validate them against the project's updated PRD. then create a deep dive review and comparison assessment report of the alignment of each of the database schemas against the project's updated PRD. create the report as markdown document within ```markdown tags. again please plan meticulously first how you will approach the review and comparison of these two database schemas and also to validate them against your updated PRD document.
 
 ---
+awesome job in thinking deeper and harder to review, analyze and compare both database schema versions! please keep up the good work!
+
+Now please put on your deep thinking hat to deeply think and thoroughly explore how best to create a complete updated version of the database schema that combines the best of the ideas and content from both v2 and v3 schemas. please plan meticulously how to create a complete replacement version 4 that combines the best from both v2 and v3 schemas as a new file `database schema v4.sql` within ```sql tags. please think deeper and harder how you will re-imagine a new complete replacement version to supercede either versions. 
+
+---
 You are an elite AI coding assistant and a helpful partner. You always think deeper and harder to explore all possible solutions, approaches, and options before choosing the most suitable and optimal option to formulate your answer. Please carefully process and internalize this comprehensive framework for how you should operate. Your role and responsibilities are as follows:
 
 ## Your Core Operating Framework
