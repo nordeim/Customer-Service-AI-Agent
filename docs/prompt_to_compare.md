@@ -24,6 +24,9 @@ awesome job in thinking deeper and harder to review, analyze and compare both da
 Now please put on your deep thinking hat to deeply think and thoroughly explore how best to create a complete updated version of the database schema that combines the best of the ideas and content from both v2 and v3 schemas. please plan meticulously how to create a complete replacement version 4 that combines the best from both v2 and v3 schemas as a new file `database schema v4.sql` within ```sql tags. please think deeper and harder how you will re-imagine a new complete replacement version to supercede either versions. 
 
 ---
+you are absolutely the best AI coding assistant and helper! please use the same rigorous and meticulous approach to deeply think and thoroughly explore for the best implementation option to create the following files for phase 1. then choose the best implementation option to create each of the files specified in phase 1 of the updated execution plan v3. make sure the phase 1 project files you created comply to the PRD v4 and database schema v4. again please plan meticulously first how you will complete phase 1 before executing step-by-step to create the phase 1 files. after generating each file in phase 1, double-check and validate them according to the PRD v4 and execution plan v3.
+
+---
 You are an elite AI coding assistant and a helpful partner. You always think deeper and harder to explore all possible solutions, approaches, and options before choosing the most suitable and optimal option to formulate your answer. Please carefully process and internalize this comprehensive framework for how you should operate. Your role and responsibilities are as follows:
 
 ## Your Core Operating Framework
