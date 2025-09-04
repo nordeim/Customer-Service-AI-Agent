@@ -22,11 +22,13 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         duration_ms = int((time.time() - start) * 1000)
         self.logger.info(
-            "request",
-            method=request.method,
-            path=request.url.path,
-            status=response.status_code,
-            duration_ms=duration_ms,
+            "request handled",  # This is the main log message
+            extra={
+                "method": request.method,
+                "path": request.url.path,
+                "status": response.status_code,
+                "duration_ms": duration_ms,
+            },
         )
         response.headers["X-Request-ID"] = req_id
         return response
