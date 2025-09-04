@@ -2,3 +2,6 @@ pip install sqlalchemy[asyncio] asyncpg alembic pydantic pydantic-settings pytho
 
 # generate key
 python -c 'import secrets; print(secrets.token_hex(32))'
+
+# run minimal
+poetry run python scripts/test_business_logic.py
