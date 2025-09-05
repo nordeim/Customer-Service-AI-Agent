@@ -5,3 +5,5 @@ python -c 'import secrets; print(secrets.token_hex(32))'
 
 # run minimal
 poetry run python scripts/test_business_logic.py
+
+poetry run python scripts/test_ai_services.py

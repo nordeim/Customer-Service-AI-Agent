@@ -34,6 +34,10 @@ class AIProcessingError(AppError):
     """AI pipeline processing failures."""
 
 
+class AIServiceError(AppError):
+    """AI service failures (e.g., model errors, API failures)."""
+
+
 class IntegrationError(AppError):
     """Third-party integration error (e.g., Salesforce)."""
 
