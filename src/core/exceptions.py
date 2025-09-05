@@ -53,3 +53,7 @@ class ValidationError(AppError):
 
 class RateLimitError(AppError):
     """Rate limit exceeded."""
+
+
+class IntentHandlingError(AppError):
+    """Intent processing and handling failures."""
