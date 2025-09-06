@@ -1,5 +1,8 @@
 version: '3.8'
 
+# Load environment variables from .env.docker file
+env_file: .env.docker
+
 services:
   # PostgreSQL 16 with Alpine Linux
   postgres:
