@@ -292,6 +292,37 @@ class EmailIntegrationConfig(BaseIntegrationConfig):
     monitoring: MonitoringConfig = Field(default_factory=MonitoringConfig, description="Monitoring configuration")
 
 
+class WebhookIntegrationConfig(BaseIntegrationConfig):
+    """Webhook integration configuration."""
+    
+    # Webhook-specific settings
+    test_endpoint: Optional[HttpUrl] = Field(default=None, description="Test endpoint URL for health checks")
+    enable_signature_verification: bool = Field(default=True, description="Enable HMAC signature verification")
+    enable_timestamp_validation: bool = Field(default=True, description="Enable timestamp validation for replay protection")
+    enable_ip_whitelist: bool = Field(default=False, description="Enable IP address whitelisting")
+    dead_letter_queue_size: int = Field(default=1000, ge=100, le=10000, description="Maximum dead letter queue size")
+    
+    # Retry configuration
+    max_retries: int = Field(default=3, ge=0, le=10, description="Maximum retry attempts")
+    base_delay: float = Field(default=1.0, ge=0.1, le=60.0, description="Base delay for exponential backoff (seconds)")
+    max_delay: float = Field(default=60.0, ge=1.0, le=300.0, description="Maximum delay for exponential backoff (seconds)")
+    exponential_base: float = Field(default=2.0, ge=1.1, le=5.0, description="Exponential backoff multiplier")
+    
+    # Security settings
+    max_payload_size: int = Field(default=1048576, ge=1024, le=10485760, description="Maximum payload size in bytes")
+    max_age_seconds: int = Field(default=300, ge=60, le=3600, description="Maximum age for timestamp validation (seconds)")
+    allowed_signature_algorithms: List[str] = Field(
+        default_factory=lambda: ["sha256", "sha512"],
+        description="Allowed signature algorithms"
+    )
+    
+    # Nested configurations
+    rate_limit: RateLimitConfig = Field(default_factory=RateLimitConfig, description="Rate limiting configuration")
+    retry: RetryConfig = Field(default_factory=RetryConfig, description="Retry configuration")
+    security: SecurityConfig = Field(default_factory=SecurityConfig, description="Security configuration")
+    monitoring: MonitoringConfig = Field(default_factory=MonitoringConfig, description="Monitoring configuration")
+
+
 # Configuration Management
 
 class IntegrationConfigManager:
@@ -377,6 +408,7 @@ DEFAULT_INTEGRATION_CONFIGS = {
     "slack": SlackIntegrationConfig,
     "teams": TeamsIntegrationConfig,
     "email": EmailIntegrationConfig,
+    "webhook": WebhookIntegrationConfig,
 }
 
 # Export configuration models
@@ -398,6 +430,7 @@ __all__ = [
     "SlackIntegrationConfig",
     "TeamsIntegrationConfig",
     "EmailIntegrationConfig",
+    "WebhookIntegrationConfig",
     "IntegrationConfigManager",
     "DEFAULT_INTEGRATION_CONFIGS",
 ]
