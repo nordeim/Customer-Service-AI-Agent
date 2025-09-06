@@ -25,10 +25,10 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 
 from src.core.config import get_settings
 from src.core.logging import get_logger
-from src.core.exceptions import ExternalServiceError
-from ..base import BaseIntegrationImpl, OAuth2Client, RateLimitError
+from src.core.exceptions import ExternalServiceError, RateLimitError
+from ..base import BaseIntegrationImpl, OAuth2Client
 from ..config import SecurityConfig, SalesforceIntegrationConfig
-from . import IntegrationType
+from .. import IntegrationType
 
 logger = get_logger(__name__)
 

@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from typing import Dict, Type
 from ..base import BaseIntegrationImpl
-from . import IntegrationType
+from .. import IntegrationType
 
 # Import all external integrations
 from .jira import JiraIntegration, JiraIssue, JiraComment, JiraWorklog, JiraSprint, JiraProject, JiraField, JiraAPIError, JiraRateLimitError

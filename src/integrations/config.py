@@ -292,6 +292,51 @@ class EmailIntegrationConfig(BaseIntegrationConfig):
     monitoring: MonitoringConfig = Field(default_factory=MonitoringConfig, description="Monitoring configuration")
 
 
+class WhatsAppIntegrationConfig(BaseIntegrationConfig):
+    """WhatsApp Business API integration configuration."""
+    
+    # WhatsApp-specific settings
+    access_token: str = Field(description="WhatsApp Business API access token")
+    phone_number_id: str = Field(description="WhatsApp Business phone number ID")
+    business_account_id: str = Field(description="WhatsApp Business account ID")
+    webhook_verify_token: str = Field(description="Webhook verification token")
+    
+    # API settings
+    api_version: str = Field(default="v18.0", description="WhatsApp API version")
+    base_url: HttpUrl = Field(default="https://graph.facebook.com", description="WhatsApp API base URL")
+    
+    # Business profile settings
+    business_name: Optional[str] = Field(default=None, description="Business name")
+    business_description: Optional[str] = Field(default=None, description="Business description")
+    business_email: Optional[str] = Field(default=None, description="Business email")
+    business_website: Optional[HttpUrl] = Field(default=None, description="Business website URL")
+    business_address: Optional[str] = Field(default=None, description="Business address")
+    
+    # Message settings
+    enable_templates: bool = Field(default=True, description="Enable message templates")
+    enable_media_messages: bool = Field(default=True, description="Enable media messages")
+    enable_interactive_messages: bool = Field(default=True, description="Enable interactive messages")
+    enable_read_receipts: bool = Field(default=True, description="Enable read receipts")
+    
+    # Rate limiting
+    max_messages_per_second: int = Field(default=20, ge=1, le=100, description="Maximum messages per second")
+    max_conversations_per_day: int = Field(default=1000, ge=100, le=10000, description="Maximum conversations per day")
+    
+    # Webhook settings
+    webhook_url: Optional[HttpUrl] = Field(default=None, description="Webhook URL for incoming messages")
+    enable_webhook_verification: bool = Field(default=True, description="Enable webhook signature verification")
+    
+    # Quality settings
+    quality_rating_threshold: str = Field(default="MEDIUM", description="Minimum quality rating required")
+    enable_quality_monitoring: bool = Field(default=True, description="Enable quality monitoring")
+    
+    # Nested configurations
+    rate_limit: RateLimitConfig = Field(default_factory=RateLimitConfig, description="Rate limiting configuration")
+    retry: RetryConfig = Field(default_factory=RetryConfig, description="Retry configuration")
+    security: SecurityConfig = Field(default_factory=SecurityConfig, description="Security configuration")
+    monitoring: MonitoringConfig = Field(default_factory=MonitoringConfig, description="Monitoring configuration")
+
+
 class WebhookIntegrationConfig(BaseIntegrationConfig):
     """Webhook integration configuration."""
     

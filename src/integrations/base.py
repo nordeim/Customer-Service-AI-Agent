@@ -25,7 +25,7 @@ from redis import Redis
 
 from src.core.config import get_settings
 from src.core.logging import get_logger
-from src.core.exceptions import ExternalServiceError
+from src.core.exceptions import ExternalServiceError, RateLimitError
 from . import (
     BaseIntegration,
     IntegrationException,

@@ -57,3 +57,7 @@ class RateLimitError(AppError):
 
 class IntentHandlingError(AppError):
     """Intent processing and handling failures."""
+
+
+class ExternalServiceError(AppError):
+    """External service/API integration errors."""

@@ -544,7 +544,7 @@ class TeamsIntegration(BaseIntegrationImpl):
     
     # Verification and Security
     
-    def verify_request_authorization(self, authorization_header: str) -> bool:
+    async def verify_request_authorization(self, authorization_header: str) -> bool:
         """Verify Teams request authorization."""
         if not authorization_header.startswith("Bearer "):
             return False

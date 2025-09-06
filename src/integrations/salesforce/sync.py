@@ -25,8 +25,7 @@ from redis import Redis
 from src.core.config import get_settings
 from src.core.logging import get_logger
 from src.core.exceptions import ExternalServiceError
-from src.database.connection import get_session
-from src.database.models import SalesforceSyncRecord
+from src.database.connection import get_sessionmaker
 from ..base import SyncDirection, ConflictResolutionStrategy
 from .client import SalesforceClient, SalesforceAPIError
 from .models import (
@@ -79,6 +78,9 @@ class SalesforceSyncEngine:
             "start_time": None,
             "end_time": None
         }
+        
+        # In-memory sync state storage (simplified for Phase 7)
+        self._sync_records: Dict[str, Dict[str, Any]] = {}
     
     # Core Sync Methods
     
@@ -429,7 +431,8 @@ class SalesforceSyncEngine:
         status: str = "synced"
     ) -> None:
         """Update sync state for a record."""
-        async with get_session() as session:
+        session_factory = get_sessionmaker()
+        async with session_factory() as session:
             # Update or create sync record
             stmt = select(SalesforceSyncRecord).where(
                 SalesforceSyncRecord.organization_id == self.organization_id,
@@ -464,7 +467,8 @@ class SalesforceSyncEngine:
     
     async def _get_last_sync_time(self, object_type: str, record_id: str) -> Optional[datetime]:
         """Get last sync time for a record."""
-        async with get_session() as session:
+        session_factory = get_sessionmaker()
+        async with session_factory() as session:
             stmt = select(SalesforceSyncRecord.last_sync_date).where(
                 SalesforceSyncRecord.organization_id == self.organization_id,
                 SalesforceSyncRecord.local_id == record_id,
@@ -478,7 +482,8 @@ class SalesforceSyncEngine:
     
     async def _get_local_id_by_salesforce_id(self, object_type: str, salesforce_id: str) -> Optional[str]:
         """Get local ID by Salesforce ID."""
-        async with get_session() as session:
+        session_factory = get_sessionmaker()
+        async with session_factory() as session:
             stmt = select(SalesforceSyncRecord.local_id).where(
                 SalesforceSyncRecord.organization_id == self.organization_id,
                 SalesforceSyncRecord.salesforce_id == salesforce_id,
@@ -529,7 +534,8 @@ class SalesforceSyncEngine:
     
     async def _get_last_sync_timestamp(self, object_type: str) -> Optional[datetime]:
         """Get last successful sync timestamp for object type."""
-        async with get_session() as session:
+        session_factory = get_sessionmaker()
+        async with session_factory() as session:
             stmt = select(SalesforceSyncRecord.last_sync_date).where(
                 SalesforceSyncRecord.organization_id == self.organization_id,
                 SalesforceSyncRecord.object_type == object_type,
@@ -624,7 +630,8 @@ class SalesforceSyncEngine:
     
     async def get_sync_status(self, object_type: Optional[str] = None) -> Dict[str, Any]:
         """Get synchronization status and statistics."""
-        async with get_session() as session:
+        session_factory = get_sessionmaker()
+        async with session_factory() as session:
             # Get overall sync statistics
             if object_type:
                 stmt = select(SalesforceSyncRecord).where(
