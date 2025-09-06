@@ -1,12 +1,9 @@
 version: '3.8'
 
-# Load environment variables from .env.docker file
-env_file: .env.docker
-
 services:
-  # PostgreSQL 16 with Alpine Linux
+  # PostgreSQL 16 with pgvector extension
   postgres:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: ai-customer-service-postgres
     restart: unless-stopped
     environment:
