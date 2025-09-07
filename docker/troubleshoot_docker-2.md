@@ -1,3 +1,99 @@
+Jeremiah — the Elasticsearch logs make the root cause crystal clear:  
+
+```
+cannot upgrade a node from version [8.11.3] directly to version [9.1.3], upgrade to version [8.19.0] first.
+```
+
+This isn’t a config or heap/memlock problem — it’s a **data directory version mismatch**.  
+Your `elasticsearch_data` volume still contains metadata from an **8.11.3** cluster, and ES 9.1.3 refuses to start on it because the upgrade path must go through **8.19.0** first.
+
+---
+
+## You have two possible paths forward
+
+### **Option 1 — Keep your existing data and do a staged upgrade**
+If you need to preserve the data in `elasticsearch_data`:
+1. Change your `docker-compose.yml` to temporarily use:
+   ```yaml
+   image: elastic/elasticsearch:8.19.0
+   ```
+2. Start ES 8.19.0, let it perform the internal upgrade.
+3. Once it’s healthy, shut it down and change the image to `elastic/elasticsearch:9.1.3`.
+4. Start again — now the metadata is compatible.
+
+---
+
+### **Option 2 — Wipe the ES data volume and start fresh**
+If you don’t need the old data (common in dev):
+1. Stop the stack:
+   ```bash
+   docker-compose down
+   ```
+2. Remove the ES volume:
+   ```bash
+   docker volume rm customer-service-ai-agent_elasticsearch_data
+   ```
+   *(Replace `customer-service-ai-agent_elasticsearch_data` with the actual volume name from `docker volume ls`.)*
+3. Start the stack again:
+   ```bash
+   docker-compose up -d elasticsearch
+   ```
+4. ES will create a fresh 9.1.3 cluster with a clean data directory.
+
+---
+
+## Why this happens
+Elasticsearch stores cluster metadata in `/usr/share/elasticsearch/data`.  
+When you upgrade across major versions, ES enforces a **supported upgrade path**.  
+For 8.11.3 → 9.1.3, the path is:
+```
+8.11.3 → 8.19.0 → 9.1.3
+```
+Skipping the intermediate version triggers the `IllegalStateException` you’re seeing.
+
+---
+
+## My recommendation for your dev stack
+Since this is a development environment and you likely don’t need to preserve the old ES data, **Option 2** is fastest and cleanest.  
+If you do need the data, follow **Option 1** exactly.
+
+---
+That’s exactly what we wanted to see — a **green** cluster status and the container marked **healthy** means Elasticsearch 9.1.3 is now fully up and running with a clean data directory.  
+
+By removing the old `elasticsearch_data` volume, you eliminated the incompatible 8.11.3 metadata that was blocking the upgrade path. Now ES has initialized fresh, passed all bootstrap checks, and is ready to accept connections from your API and any other services.
+
+---
+
+### ✅ Quick next steps to lock this in
+1. **Verify version**  
+   ```bash
+   curl http://localhost:${ELASTICSEARCH_PORT:-9200}
+   ```
+   You should see `"number" : "9.1.3"` in the JSON.
+
+2. **Run the `src.main` sanity check** (to confirm API import path is fixed):  
+   ```bash
+   docker exec -it ai-customer-service-api python -c "import sys; print(sys.path); import src.main; print('✅ src.main import OK')"
+   ```
+
+3. **Test API → ES integration**  
+   If your API has a health endpoint that checks Elasticsearch, hit it now to confirm connectivity.
+
+4. **Optional dev safeguard**  
+   If you want to avoid this kind of version mismatch in the future, you can:
+   - Add a comment in `docker-compose.yml` noting the ES version and that upgrading across majors may require a volume reset or staged upgrade.
+   - For production, always follow the documented upgrade path.
+
+---
+
+If you’d like, I can now **update your startup/reset script** so it:
+- Checks for `vm.max_map_count`
+- Runs the `src.main` import sanity check
+- Waits for Elasticsearch to be green before starting the API
+
+https://copilot.microsoft.com/shares/bUGE2c52f8fsEVpAcRFD2
+
+---
 Alright Jeremiah — two separate but related issues here:  
 1. **Your `src.main` sanity check**  
 2. **Why both Elasticsearch 9.1.3 and Kafka are in a restart loop**
