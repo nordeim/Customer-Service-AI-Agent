@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "Loading",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "chat": {
+    "inputPlaceholder": "Type your message...",
+    "inputAriaLabel": "Chat input field",
+    "send": "Send",
+    "sendButtonAriaLabel": "Send message"
+  },
+  "admin": {
+    "intentManager": {
+      "title": "Intent Manager",
+      "patterns": "Patterns",
+      "responses": "Responses"
+    }
+  },
+  "analytics": {
+    "realTimeDashboard": "Real-time Dashboard",
+    "deflectionRate": "Deflection Rate",
+    "csat": "Customer Satisfaction",
+    "activeConversations": "Active Conversations",
+    "avgResponseTime": "Avg Response Time",
+    "escalationRate": "Escalation Rate"
+  }
+}
