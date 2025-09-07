@@ -4795,4 +4795,330 @@ export const mockAuthResponse: APIResponse<any> = {
     },
     token: 'test-token',
     refreshToken: 'test-refresh-token',
-    expiresAt: new Date(Date.now() + 3
+    expiresAt: new Date(Date.now() + 3600000).toISOString(),
+  },
+  status: 200,
+};
+
+export const mockConversationResponse: APIResponse<Conversation> = {
+  data: {
+    id: 'conv123',
+    organizationId: 'org123',
+    userId: 'user123',
+    conversationNumber: 1,
+    title: 'Test Conversation',
+    channel: 'web_chat',
+    status: 'active',
+    priority: 'medium',
+    isUrgent: false,
+    startedAt: new Date().toISOString(),
+    lastActivityAt: new Date().toISOString(),
+    messageCount: 2,
+    aiHandled: true,
+    resolved: false,
+    escalated: false,
+    language: 'en',
+    tags: [],
+    metadata: {},
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  status: 200,
+};
+
+export const mockMessagesResponse: APIResponse<Message[]> = {
+  data: [
+    {
+      id: 'msg1',
+      conversationId: 'conv123',
+      organizationId: 'org123',
+      senderType: 'user',
+      senderId: 'user123',
+      senderName: 'Test User',
+      content: 'Hello',
+      contentType: 'text',
+      createdAt: new Date().toISOString(),
+      aiProcessed: false,
+      isFlagged: false,
+      isEdited: false,
+      hasAttachments: false,
+      attachments: [],
+      metadata: {},
+    },
+    {
+      id: 'msg2',
+      conversationId: 'conv123',
+      organizationId: 'org123',
+      senderType: 'ai_agent',
+      senderId: 'ai123',
+      senderName: 'AI Assistant',
+      content: 'Hi there!',
+      contentType: 'text',
+      createdAt: new Date().toISOString(),
+      aiProcessed: true,
+      isFlagged: false,
+      isEdited: false,
+      hasAttachments: false,
+      attachments: [],
+      metadata: {},
+    },
+  ],
+  status: 200,
+};
+
+export const mockError: APIResponse<any> = {
+  data: null,
+  status: 400,
+  errors: [
+    {
+      code: 'BAD_REQUEST',
+      message: 'Invalid request data',
+      details: { field: 'email', reason: 'Invalid email format' },
+      timestamp: new Date().toISOString(),
+    },
+  ],
+};
+```
+
+## frontend/src/test/mockedData.ts
+```typescript
+import { User, Organization, Conversation, Message } from '@store/types';
+
+export const mockUser: User = {
+  id: 'user123',
+  organizationId: 'org123',
+  email: 'test@example.com',
+  displayName: 'Test User',
+  avatarUrl: 'https://example.com/avatar.png',
+  role: 'customer',
+  permissions: {},
+  isActive: true,
+  lastSeenAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+export const mockOrganization: Organization = {
+  id: 'org123',
+  slug: 'test-org',
+  name: 'Test Organization',
+  subscriptionTier: 'free',
+  settings: {
+    aiEnabled: true,
+    autoEscalation: true,
+    sentimentAnalysis: true,
+    emotionDetection: true,
+    languageDetection: true,
+    profanityFilter: true,
+    autoTranslation: false,
+  },
+  features: {
+    customModels: false,
+    whiteLabel: false,
+    ssoEnabled: false,
+    apiAccess: true,
+    webhooks: true,
+    analyticsDashboard: true,
+  },
+  limits: {
+    maxUsers: 10,
+    maxConversationsPerMonth: 1000,
+    maxMessagesPerConversation: 100,
+    maxKnowledgeEntries: 1000,
+    maxApiCallsPerHour: 10000,
+    storageQuotaGb: 10,
+  },
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+export const mockConversation: Conversation = {
+  id: 'conv123',
+  organizationId: 'org123',
+  userId: 'user123',
+  conversationNumber: 1,
+  title: 'Test Conversation',
+  channel: 'web_chat',
+  status: 'active',
+  priority: 'medium',
+  isUrgent: false,
+  startedAt: new Date().toISOString(),
+  lastActivityAt: new Date().toISOString(),
+  messageCount: 2,
+  aiHandled: true,
+  resolved: false,
+  escalated: false,
+  language: 'en',
+  tags: [],
+  metadata: {},
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+export const mockMessages: Message[] = [
+  {
+    id: 'msg1',
+    conversationId: 'conv123',
+    organizationId: 'org123',
+    senderType: 'user',
+    senderId: 'user123',
+    senderName: 'Test User',
+    content: 'Hello',
+    contentType: 'text',
+    createdAt: new Date().toISOString(),
+    aiProcessed: false,
+    isFlagged: false,
+    isEdited: false,
+    hasAttachments: false,
+    attachments: [],
+    metadata: {},
+  },
+  {
+    id: 'msg2',
+    conversationId: 'conv123',
+    organizationId: 'org123',
+    senderType: 'ai_agent',
+    senderId: 'ai123',
+    senderName: 'AI Assistant',
+    content: 'Hi there!',
+    contentType: 'text',
+    createdAt: new Date().toISOString(),
+    aiProcessed: true,
+    isFlagged: false,
+    isEdited: false,
+    hasAttachments: false,
+    attachments: [],
+    metadata: {},
+  },
+];
+```
+
+## frontend/src/test/setupTests.ts
+```typescript
+import '@testing-library/jest-dom';
+import { vi } from 'vitest';
+
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // deprecated
+    removeListener: vi.fn(), // deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+
+// Mock IntersectionObserver
+class MockIntersectionObserver {
+  constructor(callback: () => void) {
+    this.callback = callback;
+    this.observe = vi.fn();
+    this.unobserve = vi.fn();
+    this.disconnect = vi.fn();
+  }
+  
+  callback: () => void;
+  observe: () => void;
+  unobserve: () => void;
+  disconnect: () => void;
+}
+
+global.IntersectionObserver = MockIntersectionObserver as any;
+
+// Mock WebSocket
+class MockWebSocket {
+  constructor(url: string) {
+    this.url = url;
+    this.readyState = WebSocket.CONNECTING;
+    setTimeout(() => {
+      this.onopen?.(new Event('open'));
+      this.readyState = WebSocket.OPEN;
+    }, 0);
+  }
+  
+  url: string;
+  readyState: number;
+  onopen: ((event: Event) => void) | null = null;
+  onclose: ((event: CloseEvent) => void) | null = null;
+  onerror: ((event: Event) => void) | null = null;
+  onmessage: ((event: MessageEvent) => void) | null = null;
+  
+  send(data: string) {
+    // Mock implementation
+  }
+  
+  close(code?: number, reason?: string) {
+    this.readyState = WebSocket.CLOSED;
+    this.onclose?.(new CloseEvent('close'));
+  }
+}
+
+global.WebSocket = MockWebSocket as any;
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+  length: 0,
+  key: vi.fn(),
+};
+
+global.localStorage = localStorageMock as any;
+
+// Mock sessionStorage
+const sessionStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+  length: 0,
+  key: vi.fn(),
+};
+
+global.sessionStorage = sessionStorageMock as any;
+
+// Mock Notification API
+global.Notification = vi.fn().mockImplementation(() => ({
+  close: vi.fn(),
+}));
+
+// Mock geolocation
+global.navigator.geolocation = {
+  getCurrentPosition: vi.fn(),
+  watchPosition: vi.fn(),
+  clearWatch: vi.fn(),
+};
+
+// Mock media devices
+global.navigator.mediaDevices = {
+  getUserMedia: vi.fn().mockResolvedValue({
+    getTracks: () => [],
+  }),
+  enumerateDevices: vi.fn().mockResolvedValue([]),
+};
+
+// Mock i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: {
+      language: 'en',
+      changeLanguage: vi.fn(),
+    },
+  }),
+  Trans: ({ children }: { children: React.ReactNode }) => children,
+}));
+
+// Mock React Router
+vi.mock('react-router-dom', () => ({
+  ...vi.importActual('react-router-dom'),
+  useParams: () => ({ conversationId: 'conv123' }),
+  useNavigate: () => vi.fn(),
+  useLocation: () => ({ pathname: '/
