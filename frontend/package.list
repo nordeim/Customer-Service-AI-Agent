@@ -1,0 +1,44 @@
+$ npm list
+customer-service-ai-frontend@0.1.0 /Home1/project/Customer-Service-AI-Agent/frontend
+├── @testing-library/jest-dom@6.8.0
+├── @testing-library/react@14.3.1
+├── @types/jest@29.5.14
+├── @typescript-eslint/eslint-plugin@6.21.0
+├── @typescript-eslint/parser@6.21.0
+├── @vitejs/plugin-react@4.7.0
+├── autoprefixer@10.4.21
+├── eslint-config-prettier@9.1.2
+├── eslint-plugin-react-hooks@4.6.2
+├── eslint-plugin-react@7.37.5
+├── eslint@8.57.1
+├── i18next@23.16.8
+├── jest-environment-jsdom@29.7.0
+├── jest@29.7.0
+├── postcss@8.5.6
+├── prettier@3.6.2
+├── react-dom@18.3.1
+├── react-i18next@12.3.1
+├── react-router-dom@6.30.1
+├── react@18.3.1
+├── tailwindcss@3.4.17
+├── ts-jest@29.4.1
+├── typescript@5.9.2
+└── vite@5.4.19
+
+
+$ npm run dev
+
+> customer-service-ai-frontend@0.1.0 dev
+> vite
+
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+
+  VITE v5.4.19  ready in 271 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+12:35:01 PM [vite] http proxy error: /api/v1/conversations
+Error: connect ECONNREFUSED 127.0.0.1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1636:16)
+
