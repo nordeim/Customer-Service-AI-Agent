@@ -29,6 +29,7 @@ services:
     networks:
       - ai-customer-service
 
+  # Redis for caching and session management
   redis:
     image: redis:7-alpine
     container_name: ai-customer-service-redis
@@ -46,6 +47,7 @@ services:
     networks:
       - ai-customer-service
 
+  # Elasticsearch for search
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.3
     container_name: ai-customer-service-elasticsearch
@@ -69,6 +71,7 @@ services:
     networks:
       - ai-customer-service
 
+  # Neo4j for graph database
   neo4j:
     image: neo4j:5.15.0
     container_name: ai-customer-service-neo4j
@@ -93,6 +96,7 @@ services:
     networks:
       - ai-customer-service
 
+  # MongoDB for session storage
   mongodb:
     image: mongo:7.0.5
     container_name: ai-customer-service-mongodb
@@ -114,6 +118,7 @@ services:
     networks:
       - ai-customer-service
 
+  # Kafka for message streaming
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.1
     container_name: ai-customer-service-zookeeper
@@ -155,6 +160,7 @@ services:
     networks:
       - ai-customer-service
 
+  # API Application
   api:
     build:
       context: .
@@ -198,7 +204,13 @@ services:
       - ./src:/app/src
       - ./tests:/app/tests
       - ./logs:/app/logs
-    # Healthcheck is defined in Dockerfile to avoid duplication
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     networks:
       - ai-customer-service
 
@@ -224,4 +236,3 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/16
-
