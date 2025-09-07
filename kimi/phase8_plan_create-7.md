@@ -5121,4 +5121,24 @@ vi.mock('react-router-dom', () => ({
   ...vi.importActual('react-router-dom'),
   useParams: () => ({ conversationId: 'conv123' }),
   useNavigate: () => vi.fn(),
-  useLocation: () => ({ pathname: '/
+  useLocation: () => ({ pathname: '/chat/conv123' }),
+}));
+
+// Mock API responses
+vi.mock('@store/api', () => ({
+  authAPI: {
+    login: vi.fn().mockResolvedValue(mockAuthResponse),
+    refreshToken: vi.fn().mockResolvedValue(mockAuthResponse),
+    getCurrentUser: vi.fn().mockResolvedValue(mockAuthResponse),
+  },
+  conversationAPI: {
+    getConversations: vi.fn().mockResolvedValue(mockConversationResponse),
+    getConversation: vi.fn().mockResolvedValue(mockConversationResponse),
+    getMessages: vi.fn().mockResolvedValue(mockMessagesResponse),
+    createConversation: vi.fn().mockResolvedValue(mockConversationResponse),
+    sendMessage: vi.fn().mockResolvedValue(mockMessagesResponse[0]),
+  },
+}));
+
+// Mock services
+vi.mock('@services
