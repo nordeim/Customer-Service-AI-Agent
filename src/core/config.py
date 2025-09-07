@@ -5,6 +5,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
+import os
 
 
 class JWTSettings(BaseModel):
@@ -56,4 +58,8 @@ class Settings(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    # Ensure .env is loaded into the environment (helps the uvicorn reloader process)
+    env_path = os.path.join(os.getcwd(), '.env')
+    if os.path.exists(env_path):
+        load_dotenv(env_path, override=False)
     return Settings()
