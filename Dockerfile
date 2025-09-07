@@ -62,6 +62,7 @@ RUN mkdir -p /app/logs /app/data /app/config && \
 
 # Set working directory
 WORKDIR /app
+ENV PYTHONPATH="/app"
 
 # Copy application code
 COPY --chown=aiagent:aiagent src/ ./src/
