@@ -19,7 +19,12 @@ docker-compose up -d api
 # docker-compose up --build -d api
 
 # once container is built and running (or even if it’s restarting), you can exec into it and run:
-docker exec -it ai-customer-service-api python -c "import sys; print(sys.path); import src.main; print('✅ src.main import OK')"
+#docker exec -it ai-customer-service-api python -c "import sys; print(sys.path); import src.main; print('✅ src.main import OK')"
+docker exec -it ai-customer-service-api python -c "import sys; print(sys.path); import src.api.main; print('✅ src.api.main import OK')"
+
+# Hit health:
+curl http://localhost:8000/health
 
 # run migrations
 docker-compose exec api alembic upgrade head
+

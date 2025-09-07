@@ -10,8 +10,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    gcc \
-    g++ \
     libpq-dev \
     libssl-dev \
     libffi-dev \
@@ -28,7 +26,6 @@ RUN pip install --upgrade pip setuptools wheel && \
     pip install --prefer-binary -r /tmp/requirements.txt
 
 # ------------------------------------------------------------------------------
-
 FROM python:3.12-trixie
 
 # Environment
@@ -37,7 +34,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/opt/venv/bin:$PATH"
 
 # Non-root user
-# RUN addgroup -g 1000 aiagent && adduser -D -u 1000 -G aiagent aiagent
 RUN groupadd -r aiagent && useradd -r -g aiagent aiagent
 
 # Runtime dependencies (Debian trixie)
@@ -55,18 +51,17 @@ COPY --from=builder /opt/venv /opt/venv
 
 # Workdir and import path
 WORKDIR /app
-ENV PYTHONPATH="/app"
+ENV PYTHONPATH=/app/src
 
-# Copy application code
+# Copy application code (omit tests/ in prod unless required)
 COPY --chown=aiagent:aiagent src/ ./src/
-COPY --chown=aiagent:aiagent tests/ ./tests/
+# COPY --chown=aiagent:aiagent tests/ ./tests/
+
 COPY --chown=aiagent:aiagent database_schema.sql ./
 COPY --chown=aiagent:aiagent pyproject.toml ./
-COPY --chown=aiagent:aiagent README.md ./
+# Optional for prod:
+# COPY --chown=aiagent:aiagent README.md ./
 
-# Ensure package initializers exist (Docker guardrail) and app dirs/ownership
-#RUN bash -eux -c 'mkdir -p src src/api && : > src/__init__.py && : > src/api/__init__.py' && \
-#    mkdir -p /app/logs /app/data /app/config && \
 # Ensure package initializers exist without truncating existing content; sh-compatible
 RUN set -eux; \
     mkdir -p src src/api /app/logs /app/data /app/config; \
@@ -84,6 +79,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 # Expose API port
 EXPOSE 8000
 
-# Start the app (aligns with your actual module path)
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start the app
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
