@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import MessageBubble from '../../components/chat/MessageBubble'
 import ChatInput from '../../components/chat/ChatInput'
+import { sendMessage } from '../../services/api'
 
 interface Message {
   id: string
@@ -18,12 +19,22 @@ const ChatPage: React.FC = () => {
   const send = async (text: string) => {
     const userMsg: Message = { id: `u-${Date.now()}`, content: text, sender: 'user', timestamp: new Date().toISOString() }
     setMessages((m) => [...m, userMsg])
-
-    // Minimal mocked bot response - in real integration this calls backend
-    setTimeout(() => {
-      const botMsg: Message = { id: `b-${Date.now()}`, content: 'Thanks — looking into that for you.', sender: 'bot', timestamp: new Date().toISOString(), emotion: 'neutral' }
-      setMessages((m) => [...m, botMsg])
-    }, 600)
+    try {
+      // attempt to call backend API
+      const res = await sendMessage(null, text)
+      // Expected res shape: { conversation_id, message: { id, content, sender, timestamp, emotion } }
+      const bot = res?.message
+      if (bot) {
+        setMessages((m) => [...m, bot])
+      } else {
+        // fallback mock
+        setMessages((m) => [...m, { id: `b-${Date.now()}`, content: 'Thanks — looking into that for you.', sender: 'bot', timestamp: new Date().toISOString(), emotion: 'neutral' }])
+      }
+    } catch (err) {
+      // graceful degradation to mock response
+      setMessages((m) => [...m, { id: `b-${Date.now()}`, content: 'Thanks — looking into that for you. (offline)', sender: 'bot', timestamp: new Date().toISOString(), emotion: 'neutral' }])
+      console.error('sendMessage failed', err)
+    }
   }
 
   return (
