@@ -1,0 +1,192 @@
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { 
+  Conversation, 
+  Message, 
+  ChatState, 
+  SendMessageData, 
+  ConversationCreateData,
+  ConversationFilters,
+  SearchOptions,
+  AppError,
+  TypingIndicatorData 
+} from '@/types'
+import apiClient from '@/services/api'
+import wsManager from '@/services/websocket'
+
+interface ConversationState extends ChatState {
+  conversations: Conversation[];
+  currentConversation: Conversation | undefined;
+  messages: Message[];
+  isLoading: boolean;
+  isTyping: boolean;
+  typingUsers: TypingIndicatorData[];
+  hasMoreMessages: boolean;
+  isSending: boolean;
+  error: AppError | null;
+  filters: ConversationFilters;
+  searchQuery: string;
+  totalConversations: number;
+}
+
+const initialState: ConversationState = {
+  conversations: [],
+  currentConversation: undefined,
+  messages: [],
+  isLoading: false,
+  isTyping: false,
+  typingUsers: [],
+  hasMoreMessages: true,
+  isSending: false,
+  error: null,
+  filters: {},
+  searchQuery: '',
+  totalConversations: 0,
+}
+
+// Async thunks
+export const fetchConversations = createAsyncThunk(
+  'conversation/fetchConversations',
+  async (params?: { page?: number; limit?: number; filters?: ConversationFilters }) => {
+    const response = await apiClient.getConversations({
+      page: params?.page || 1,
+      limit: params?.limit || 20,
+      ...params?.filters,
+    })
+    return response
+  }
+)
+
+export const fetchConversation = createAsyncThunk(
+  'conversation/fetchConversation',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const conversation = await apiClient.getConversation(id)
+      return conversation
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const createConversation = createAsyncThunk(
+  'conversation/createConversation',
+  async (data: ConversationCreateData, { rejectWithValue }) => {
+    try {
+      const conversation = await apiClient.createConversation(data)
+      return conversation
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const updateConversation = createAsyncThunk(
+  'conversation/updateConversation',
+  async ({ id, data }: { id: string; data: Partial<Conversation> }, { rejectWithValue }) => {
+    try {
+      const conversation = await apiClient.updateConversation(id, data)
+      return conversation
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const deleteConversation = createAsyncThunk(
+  'conversation/deleteConversation',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      await apiClient.deleteConversation(id)
+      return id
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const fetchMessages = createAsyncThunk(
+  'conversation/fetchMessages',
+  async ({ conversationId, before, after, limit = 50 }: { 
+    conversationId: string; 
+    before?: string; 
+    after?: string; 
+    limit?: number 
+  }) => {
+    const response = await apiClient.getMessages(conversationId, { before, after, limit })
+    return { messages: response.data, conversationId, pagination: response.metadata }
+  }
+)
+
+export const sendMessage = createAsyncThunk(
+  'conversation/sendMessage',
+  async ({ conversationId, content, contentType }: SendMessageData, { rejectWithValue }) => {
+    try {
+      const message = await apiClient.sendMessage(conversationId, content, contentType)
+      return message
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const updateMessage = createAsyncThunk(
+  'conversation/updateMessage',
+  async ({ messageId, content }: { messageId: string; content: string }, { rejectWithValue }) => {
+    try {
+      const message = await apiClient.updateMessage(messageId, content)
+      return message
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const deleteMessage = createAsyncThunk(
+  'conversation/deleteMessage',
+  async (messageId: string, { rejectWithValue }) => {
+    try {
+      await apiClient.deleteMessage(messageId)
+      return messageId
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const markAsRead = createAsyncThunk(
+  'conversation/markAsRead',
+  async ({ conversationId, messageId }: { conversationId: string; messageId: string }) => {
+    await apiClient.markAsRead(conversationId, messageId)
+    return { conversationId, messageId }
+  }
+)
+
+export const searchConversations = createAsyncThunk(
+  'conversation/searchConversations',
+  async (options: SearchOptions) => {
+    // This would be implemented with a search endpoint
+    const response = await apiClient.getConversations({
+      search: options.query,
+      ...options.filters,
+      page: options.page,
+      limit: options.limit,
+    })
+    return response
+  }
+)
+
+const conversationSlice = createSlice({
+  name: 'conversation',
+  initialState,
+  reducers: {
+    setCurrentConversation: (state, action: PayloadAction<Conversation | undefined>) => {
+      state.currentConversation = action.payload
+      if (action.payload) {
+        // Join WebSocket room for this conversation
+        wsManager.joinConversation(action.payload.id)
+      }
+    },
+    addMessage: (state, action: PayloadAction<Message>) => {
+      const message = action.payload
+      const existingIndex = state.messages.findIndex(m => m.id === message.id)
+      
